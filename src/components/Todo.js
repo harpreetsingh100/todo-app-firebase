@@ -9,7 +9,7 @@ const style = {
   button: `cursor-pointer flex items-center`,
 };
 
-const Todo = ({ todo, toggleComplete }) => {
+const Todo = ({ todo, toggleComplete, deleteTodo }) => {
   return (
     todo && (
       <li className={todo.completed ? style.liComplete : style.li}>
@@ -28,7 +28,7 @@ const Todo = ({ todo, toggleComplete }) => {
           </p>
         </div>
         <button>
-          <DeleteOutlineIcon />
+          <DeleteOutlineIcon onClick={() => deleteTodo(todo.id)} />
         </button>
       </li>
     )

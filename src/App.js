@@ -11,6 +11,7 @@ import {
   addDoc,
   orderBy,
   serverTimestamp,
+  deleteDoc,
 } from "firebase/firestore";
 
 const style = {
@@ -27,8 +28,6 @@ function App() {
   const [todos, setTodos] = useState([]);
   const [input, setInput] = useState("");
 
-  console.log(todos);
-
   const toggleComplete = async (todo) => {
     await updateDoc(doc(db, "todos", todo.id), {
       completed: !todo.completed,
@@ -37,6 +36,7 @@ function App() {
 
   const addTodo = async (e) => {
     e.preventDefault();
+    if (!input) return;
     const newTodo = await addDoc(collection(db, "todos"), {
       text: input,
       completed: false,
@@ -45,6 +45,11 @@ function App() {
     setTodos((prev) => {
       return [...prev, newTodo];
     });
+    setInput("");
+  };
+
+  const deleteTodo = async (id) => {
+    await deleteDoc(doc(db, "todos", id));
   };
 
   useEffect(() => {
@@ -80,7 +85,12 @@ function App() {
         </form>
         <ul>
           {todos.map((todo, index) => (
-            <Todo key={index} todo={todo} toggleComplete={toggleComplete} />
+            <Todo
+              key={index}
+              todo={todo}
+              toggleComplete={toggleComplete}
+              deleteTodo={deleteTodo}
+            />
           ))}
         </ul>
         {todos && todos.length < 1 ? null : (
